@@ -1,0 +1,103 @@
+﻿<view class="container">
+  <view wx:if="{{screen === 'intro'}}" class="card intro-card">
+    <view class="intro-inner">
+      <view class="hero-title">MBTI已经过时，SBTI来了。</view>
+      <view class="hero-sub">31题，测出你的抽象人格画像</view>
+      <view class="btn-row intro-actions">
+        <button class="btn-primary" bindtap="onStart">开始测试</button>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{screen === 'test'}}" class="card">
+    <view class="topbar">
+      <view class="progress">
+        <view class="progress-inner" style="width: {{progressPercent}}%;"></view>
+      </view>
+      <view class="progress-text">{{progressText}}</view>
+    </view>
+
+    <view class="question-list">
+      <block wx:for="{{visibleQuestions}}" wx:key="id" wx:for-item="q" wx:for-index="qi">
+        <view class="question">
+          <view class="question-meta">
+            <text class="badge">第{{q.order}}题</text>
+            <text>{{q.metaLabel}}</text>
+          </view>
+          <view class="question-title">{{q.text}}</view>
+          <view class="options">
+            <block wx:for="{{q.options}}" wx:key="value" wx:for-item="opt" wx:for-index="oi">
+              <view
+                class="option {{opt.selected ? 'selected' : ''}}"
+                data-qid="{{q.id}}"
+                data-value="{{opt.value}}"
+                bindtap="onSelectOption"
+              >
+                <view class="option-code">{{opt.code}}</view>
+                <view class="option-label">{{opt.label}}</view>
+              </view>
+            </block>
+          </view>
+        </view>
+      </block>
+    </view>
+
+    <view class="actions-bottom">
+      <view class="hint">{{testHint}}</view>
+      <view class="btn-row">
+        <button class="btn-secondary" bindtap="onBackIntro">返回首页</button>
+        <button class="btn-primary" bindtap="onSubmit" disabled="{{submitDisabled}}">提交并查看结果</button>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{screen === 'result'}}" class="card">
+    <view class="result-top">
+      <view class="poster-box">
+        <image wx:if="{{posterImage}}" class="poster-image" src="{{posterImage}}" mode="aspectFit"></image>
+        <view wx:else class="poster-code">{{resultCode}}</view>
+        <view class="poster-caption">{{posterCaption}}</view>
+      </view>
+      <view class="type-box">
+        <view class="type-kicker">{{resultModeKicker}}</view>
+        <view class="type-name">{{resultTypeName}}</view>
+        <view class="match">{{matchBadge}}</view>
+        <view class="type-subname">{{resultTypeSub}}</view>
+        <view wx:if="{{secondaryTypeName}}" class="secondary-type">常规第一人格：{{secondaryTypeName}}</view>
+      </view>
+    </view>
+
+    <view class="analysis-box">
+      <view class="section-title">该人格的简单解读</view>
+      <view class="paragraph">{{resultDesc}}</view>
+    </view>
+
+    <view class="dim-box" wx:if="{{!sharedView}}">
+      <view class="section-title">十五维度评分</view>
+      <block wx:for="{{dimList}}" wx:key="dim" wx:for-item="d">
+        <view class="dim-item">
+          <view class="dim-item-top">
+            <view class="dim-item-name">{{d.dimName}}</view>
+            <view class="dim-item-score">{{d.level}} / {{d.score}}分</view>
+          </view>
+          <view class="paragraph">{{d.explanation}}</view>
+        </view>
+      </block>
+    </view>
+
+    <view class="note-box">
+      <view class="section-title">友情提示</view>
+      <view class="paragraph">{{funNote}}</view>
+    </view>
+
+    <view class="btn-row result-actions">
+      <button class="btn-secondary" bindtap="onRestart">重新测试</button>
+      <button class="btn-secondary" bindtap="onShareResultImage">转发给朋友</button>
+      <button class="btn-secondary" bindtap="onSaveResultImage">保存测试结果</button>
+      <button class="btn-primary" bindtap="onToTop">回到首页</button>
+    </view>
+    <view wx:if="{{saveTip}}" class="save-tip">{{saveTip}}</view>
+  </view>
+
+  <canvas canvas-id="resultPosterCanvas" class="poster-canvas"></canvas>
+</view>
